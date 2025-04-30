@@ -1,0 +1,17 @@
+{
+	"name": "@minnebar-2025/ui",
+	"type": "module",
+	"version": "0.0.0",
+	"scripts": {
+		"dev": "astro dev --bun --host",
+		"build": "astro build",
+		"preview": "astro preview",
+		"demo": "bun run build && bun run preview",
+		"astro": "astro"
+	},
+	"dependencies": {
+		"@minnebar-2025/burgers": "workspace:*",
+		"astro": "^5.6.2",
+		"mapbox-gl": "^3.11.0"
+	}
+}

@@ -1,0 +1,147 @@
+<section>
+  <button id="center-on-location" aria-label="Center on location">
+    <svg
+      width="24px"
+      height="24px"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M5.36328 12.0523C4.01081 11.5711 3.33457 11.3304 3.13309 10.9655C2.95849 10.6492 2.95032 10.2673 3.11124 9.94388C3.29694 9.57063 3.96228 9.30132 5.29295 8.76272L17.8356 3.68594C19.1461 3.15547 19.8014 2.89024 20.2154 3.02623C20.5747 3.14427 20.8565 3.42608 20.9746 3.7854C21.1106 4.19937 20.8453 4.85465 20.3149 6.16521L15.2381 18.7078C14.6995 20.0385 14.4302 20.7039 14.0569 20.8896C13.7335 21.0505 13.3516 21.0423 13.0353 20.8677C12.6704 20.6662 12.4297 19.99 11.9485 18.6375L10.4751 14.4967C10.3815 14.2336 10.3347 14.102 10.2582 13.9922C10.1905 13.8948 10.106 13.8103 10.0086 13.7426C9.89876 13.6661 9.76719 13.6193 9.50407 13.5257L5.36328 12.0523Z"
+        stroke="#000000"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+  </button>
+  <div id="map" style="width: 100%; height: 100%;"></div>
+</section>
+
+<style>
+  section {
+    position: relative;
+    padding: 1.5rem 1.5rem 1.5rem 0;
+  }
+
+  button {
+    position: absolute;
+    top: 2.5rem;
+    right: 2.5rem;
+    background-color: var(--color-background);
+    border: none;
+    border-radius: 50%;
+    padding: 0.5rem;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  button svg {
+    /* By nature of the icon, it looks offer center. Shift it a tad. */
+    transform: translate(-1px, 1px);
+  }
+
+  button svg path {
+    fill: transparent;
+    stroke: var(--color-accent-blue);
+    transition: all 0.3s;
+  }
+
+  #map {
+    border-radius: 1.5rem;
+    border: 1px solid var(--color-muted-blue);
+  }
+
+  #map :global(.marker svg) {
+    fill: var(--color-main-text);
+    opacity: 0.5;
+    transition: all 0.3s;
+  }
+
+  #map :global(.marker path) {
+    stroke: transparent;
+  }
+
+  #map :global(.marker.active svg) {
+    opacity: 1;
+  }
+
+  #map :global(.marker.active .eye) {
+    stroke: var(--color-accent-blue);
+    fill: var(--color-accent-blue);
+  }
+</style>
+
+<script>
+  import {
+    MAPBOX_KEY,
+    MAPBOX_STYLE_KEY_LIGHT,
+    MAPBOX_STYLE_KEY_DARK,
+  } from "astro:env/client";
+  import mapboxgl from "mapbox-gl";
+  import "mapbox-gl/dist/mapbox-gl.css";
+  import { SOUPS_ON_EVENT } from "../constants/SOUPS_ON_EVENT";
+  import type { Burger } from "@minnebar-2025/burgers";
+  import { MARKER_ICON } from "../constants/MARKER_ICON";
+  import { addBurgerListeners } from "../scripts/addBurgerListeners";
+
+  mapboxgl.accessToken = MAPBOX_KEY;
+
+  const prefersDarkMode = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  ).matches;
+
+  const map = new mapboxgl.Map({
+    container: "map",
+    style: prefersDarkMode ? MAPBOX_STYLE_KEY_DARK : MAPBOX_STYLE_KEY_LIGHT,
+    center: [-93.265, 44.9778], // center on minneapolis
+    zoom: 10,
+  });
+
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", () => {
+      const prefersDarkMode = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      map.setStyle(
+        prefersDarkMode ? MAPBOX_STYLE_KEY_DARK : MAPBOX_STYLE_KEY_LIGHT
+      );
+    });
+
+  document.addEventListener(
+    SOUPS_ON_EVENT,
+    (event) => {
+      const { burgers } = (event as CustomEvent).detail;
+
+      (burgers as Burger[]).forEach((burger) => {
+        const markerDiv = document.createElement("div");
+        markerDiv.innerHTML = MARKER_ICON;
+        markerDiv.className = "marker";
+        markerDiv.setAttribute("data-burger-id", `${burger.id}`);
+        markerDiv.setAttribute("aria-label", burger.restaurant);
+
+        new mapboxgl.Marker(markerDiv)
+          .setLngLat([burger.longitude, burger.latitude])
+          .addTo(map);
+      });
+
+      addBurgerListeners();
+    },
+    { once: true }
+  );
+
+  const centerOnLocationButton = document.getElementById("center-on-location")!;
+
+  centerOnLocationButton.addEventListener("click", () => {
+    navigator.geolocation?.getCurrentPosition((position) => {
+      const { latitude, longitude } = position.coords;
+      map.flyTo({ center: [longitude, latitude], zoom: 10 });
+    });
+  });
+</script>

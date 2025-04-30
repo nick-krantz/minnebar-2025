@@ -1,0 +1,19 @@
+{
+	"name": "minnebar-2025",
+	"type": "module",
+	"private": true,
+	"workspaces": ["apps/*", "packages/*"],
+	"scripts": {
+		"dev": "bun ./scripts/bun-dev-all.js",
+		"demo": "bun ./scripts/bun-demo-all.js",
+		"api:dev": "bun run --cwd apps/api dev",
+		"web:dev": "bun run --cwd apps/ui dev",
+		"web:demo": "bun run --cwd apps/ui demo",
+		"format": "biome format --write"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@types/bun": "latest",
+		"typescript": "^5"
+	}
+}

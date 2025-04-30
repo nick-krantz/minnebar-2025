@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Burger Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lusitana&family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="/reset.css" rel="stylesheet" />
+  </head>
+  <body class="poppins">
+    <slot />
+  </body>
+</html>
+
+<style>
+  :root {
+    --color-main-text: #35445b;
+    --color-background: #fffdfe;
+    --color-accent-blue: #2f6eeb;
+    --color-muted-blue: #cdd7e6;
+    --color-secondary-blue: #818fa4;
+    --spacing-list-padding: 1.5rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-main-text: #fffdfe;
+      --color-background: #191919;
+      --color-accent-blue: #5f95ff;
+      --color-muted-blue: #475263;
+      --color-secondary-blue: #818fa4;
+    }
+  }
+
+  @media screen and (min-width: 64rem) {
+    :root {
+      --spacing-list-padding: 5rem;
+    }
+  }
+
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100dvh;
+    color: var(--color-main-text);
+    background-color: var(--color-background);
+  }
+
+  :global(.poppins-light) {
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+
+  :global(.poppins) {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  :global(.poppins-semibold) {
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  :global(.lusitana) {
+    font-family: "Lusitana", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+</style>

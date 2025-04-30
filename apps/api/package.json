@@ -1,0 +1,15 @@
+{
+	"name": "@minnebar-2025/api",
+	"version": "0.0.0",
+	"scripts": {
+		"dev": "bun run --watch src/index.ts"
+	},
+	"dependencies": {
+		"@minnebar-2025/burgers": "workspace:*",
+		"elysia": "latest",
+		"@elysiajs/cors": "latest"
+	},
+	"devDependencies": {
+		"bun-types": "latest"
+	}
+}
